@@ -7,11 +7,7 @@ import { REDIS_MODULE_TOKENS } from "src/modules/redis/constants/redis-tokens.co
 import type { ICacheService } from "src/modules/redis/services/interfaces/cache-service.interface";
 import type { IWordService } from "./interfaces/words-service.interface";
 import { WORDS_ERRORS } from "src/commons/constants/errors/words-erros.constants";
-import {
-    RECENT_WORDS_CACHE_KEY,
-    RECENT_WORDS_CACHE_TTL_SECONDS,
-    RECENT_WORDS_MAX_SIZE,
-} from "../constants/words.constants";
+import { RECENT_WORDS_CACHE_KEY, RECENT_WORDS_CACHE_TTL_SECONDS, RECENT_WORDS_MAX_SIZE } from "../constants/words.constants";
 
 @Injectable()
 export class WordsService implements IWordService {
@@ -87,20 +83,7 @@ export class WordsService implements IWordService {
         if (cached) {
             return JSON.parse(cached) as string[];
         }
-
-        const rows = await this.prisma.word.findMany({
-            select: { word: true },
-            orderBy: { created_at: "desc" },
-            take: RECENT_WORDS_MAX_SIZE
-        });
-        const result = rows.map((row) => row.word);
-        await this.cache.set(
-            RECENT_WORDS_CACHE_KEY,
-            JSON.stringify(result),
-            RECENT_WORDS_CACHE_TTL_SECONDS
-        );
-
-        return result;
+        return [];
     }
 
     async addToRecentWords(word: string): Promise<void> {
@@ -112,15 +95,8 @@ export class WordsService implements IWordService {
         if (cached) {
             list = JSON.parse(cached) as string[];
         }
-        list = [normalized, ...list.filter((w) => w !== normalized)].slice(
-            0,
-            RECENT_WORDS_MAX_SIZE
-        );
-        await this.cache.set(
-            RECENT_WORDS_CACHE_KEY,
-            JSON.stringify(list),
-            RECENT_WORDS_CACHE_TTL_SECONDS
-        );
+        list = [normalized, ...list.filter((w) => w !== normalized)].slice(0, RECENT_WORDS_MAX_SIZE);
+        await this.cache.set(RECENT_WORDS_CACHE_KEY, JSON.stringify(list), RECENT_WORDS_CACHE_TTL_SECONDS);
     }
 
     async addToFavorite(data: { wordId: number; userId: number }): Promise<void> {

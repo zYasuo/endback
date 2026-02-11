@@ -8,22 +8,30 @@ import type { IWordService } from "../modules/words/services/interfaces/words-se
 export class DictionaryService implements IDictionaryService {
     constructor(
         @Inject(DICTIONARY_MODULE_TOKENS.DICTIONARY_CLIENT)
-        private readonly dictionaryClient: DictionaryApiClient,
+        private readonly dictionary_api_client: DictionaryApiClient,
         @Inject(DICTIONARY_MODULE_TOKENS.WORDS_SERVICE)
-        private readonly wordsService: IWordService,
+        private readonly words_service: IWordService
     ) {}
 
     async getWord(language: string, word: string) {
         try {
-            const data = await this.dictionaryClient.getWord(language, word);
+            const data = await this.dictionary_api_client.getWord(language, word);
             const entry = Array.isArray(data) ? data[0] : data;
+
             if (entry) {
-                const existing = await this.wordsService.findByWord(entry.word);
+                const existing = await this.words_service.findByWord(entry.word);
                 if (!existing) {
-                    await this.wordsService.createFromApiEntry(entry);
+                    await this.words_service.createFromApiEntry(entry);
                 }
-                await this.wordsService.addToRecentWords(entry.word);
             }
+
+            const wordToRecent = (entry?.word ?? word).trim().toLowerCase();
+            if (wordToRecent) {
+                try {
+                    await this.words_service.addToRecentWords(wordToRecent);
+                } catch {}
+            }
+
             return data;
         } catch (error) {
             if (error?.response?.status === 404) {
