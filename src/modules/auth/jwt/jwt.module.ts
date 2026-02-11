@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { JwtGuard } from "./guards/jwt-guard";
-import { JWT_TOKENS } from "./constants/jwt-tokens";
+import { AUTH_MODULE_TOKENS } from "../constants/auth.tokens.constants";
 @Module({
     imports: [
         JwtModule.register({
@@ -9,12 +9,13 @@ import { JWT_TOKENS } from "./constants/jwt-tokens";
             signOptions: { expiresIn: Number(process.env.JWT_EXPIRES_IN) || 18_000 }
         })
     ],
-    providers: [JwtGuard,
+    providers: [
+        JwtGuard,
         {
-            provide: JWT_TOKENS.JWT_SERVICE,
-            useClass: JwtService
+            provide: AUTH_MODULE_TOKENS.JWT_SERVICE,
+            useExisting: JwtService
         }
     ],
-    exports: [JwtModule]
+    exports: [JwtModule, JwtGuard, AUTH_MODULE_TOKENS.JWT_SERVICE]
 })
 export class JwtAuthModule {}

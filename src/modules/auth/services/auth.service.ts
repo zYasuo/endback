@@ -9,6 +9,7 @@ import { IAuthService } from "./interfaces/auth-services.interface";
 import { USER_MODULE_TOKENS } from "../../user/constants/user.tokens.constants";
 import type { IUserService } from "../../user/services/interfaces/user-service.interface";
 import { USER_ERRORS } from "src/commons/constants/errors/user-errors.constants";
+import { AUTH_MODULE_TOKENS } from "../constants/auth.tokens.constants";
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -17,7 +18,7 @@ export class AuthService implements IAuthService {
     constructor(
         @Inject(DATABASE_MODULE_TOKENS.DATABASE_SERVICE) private readonly database: IDatabaseService,
         @Inject(USER_MODULE_TOKENS.USER_SERVICE) private readonly user_service: IUserService,
-        private readonly jwt_service: JwtService
+        @Inject(AUTH_MODULE_TOKENS.JWT_SERVICE) private readonly jwt_service: JwtService
     ) {
         this.prisma = this.database.getClient();
     }

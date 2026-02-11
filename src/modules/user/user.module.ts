@@ -8,7 +8,8 @@ import { JwtAuthModule } from "../auth/jwt/jwt.module";
 @Module({
     imports: [DatabaseModule, JwtAuthModule],
     controllers: [UserController],
-    providers: [UserService,
+    providers: [
+        UserService,
         {
             provide: USER_MODULE_TOKENS.USER_SERVICE,
             useClass: UserService
