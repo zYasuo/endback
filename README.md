@@ -1,5 +1,7 @@
 # endback
 
+**Repo:** [github.com/zYasuo/endback](https://github.com/zYasuo/endback) · branch `dl-speaks`: [endback/tree/dl-speaks](https://github.com/zYasuo/endback/tree/dl-speaks)
+
 Backend set up as a **hub**: one API that will host and serve multiple projects. Right now only **DL-speaks** is connected (the dictionary front for studying English). The plan is to plug in more apps over time.
 
 ## What's in here
@@ -64,7 +66,7 @@ API runs at `http://localhost:3000` (or whatever `PORT` you set). Base path: **`
 
 ## Projects using this hub
 
-- **[DL-speaks](../dl-speaks)** — dictionary front for studying English at home (Next.js). Set `BACKEND_URL` to this API.
+- **[DL-speaks](https://github.com/zYasuo/dl-speaks)** — dictionary front for studying English at home (Next.js). Set `BACKEND_URL` to this API.
 
 ---
 
